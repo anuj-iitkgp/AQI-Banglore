@@ -48,32 +48,47 @@ pm25_roll7 = st.number_input("7-Day Moving Avg PM 2.5", value=165.0)
 
 # 4. Predict Button Logic
 if st.button("🔮 Predict PM 2.5 Level", use_container_width=True):
-    # Dummy placeholder feature dictionary matching the exact 37 features
+    # Base dictionary containing all basic features & domain indicators
     input_dict = {
         'T': t, 'TM': tm, 'Tm': tm_min, 'SLP': slp, 'H': h, 'VV': vv, 'V': v, 'VM': vm,
         'day_index': 2088,
-        'sin_day': np.sin(2 * np.pi * 2088 / 365.25),
-        'cos_day': np.cos(2 * np.pi * 2088 / 365.25),
-        'Temp_Range': tm - tm_min,
-        'Ventilation_Index': v * vv,
-        'Humid_Temp_Ratio': h / (t + 1e-5)
+        'sin_day': float(np.sin(2 * np.pi * 2088 / 365.25)),
+        'cos_day': float(np.cos(2 * np.pi * 2088 / 365.25)),
+        'Temp_Range': float(tm - tm_min),
+        'Ventilation_Index': float(v * vv),
+        'Humid_Temp_Ratio': float(h / (t + 1e-5))
     }
     
-    # Fill remaining lag/rolling features
+    # Fill remaining lag/rolling features exactly as defined in original logic
     for lag in [1, 2, 3, 4, 5, 6, 7, 14, 21, 30]:
-        input_dict[f'PM25_lag_{lag}'] = pm25_lag1 if lag == 1 else (pm25_lag2 if lag == 2 else pm25_lag3)
+        input_dict[f'PM25_lag_{lag}'] = float(pm25_lag1 if lag == 1 else (pm25_lag2 if lag == 2 else pm25_lag3))
         
     for w in [3, 7, 14]:
-        input_dict[f'PM25_roll_mean_{w}'] = pm25_roll7
+        input_dict[f'PM25_roll_mean_{w}'] = float(pm25_roll7)
         input_dict[f'PM25_roll_std_{w}'] = 15.0
-        input_dict[f'PM25_roll_max_{w}'] = pm25_lag1 + 20
-        input_dict[f'PM25_roll_min_{w}'] = pm25_lag1 - 20
+        input_dict[f'PM25_roll_max_{w}'] = float(pm25_lag1 + 20)
+        input_dict[f'PM25_roll_min_{w}'] = float(max(0, pm25_lag1 - 20))
 
-    # DataFrame conversion & scaling
-    input_df = pd.DataFrame([input_dict])[scaler.feature_names_in_]
-    input_scaled = scaler.transform(input_df)
+    # Read expected columns directly from fitted Scaler
+    if hasattr(scaler, 'feature_names_in_'):
+        expected_cols = scaler.feature_names_in_
+    else:
+        expected_cols = list(input_dict.keys())
+
+    # Build DataFrame safely ensuring column sequence matches scaler training 100%
+    input_df = pd.DataFrame([input_dict])
     
-    prediction = model.predict(input_scaled)[0]
+    # Handle missing keys if any column name mismatch occurs with fallback values
+    for col in expected_cols:
+        if col not in input_df.columns:
+            input_df[col] = 0.0
+
+    # Align exactly to scaler feature order
+    input_df = input_df[expected_cols]
+
+    # Transform & Predict
+    input_scaled = scaler.transform(input_df)
+    prediction = float(model.predict(input_scaled)[0])
     
     st.markdown("---")
     st.metric(label="Predicted PM 2.5 Level", value=f"{prediction:.2f} µg/m³")
