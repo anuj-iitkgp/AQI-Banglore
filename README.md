@@ -60,3 +60,17 @@ AQI-Banglore/
 │── app.py                             # Web application / UI entry point
 │── requirements.txt                   # List of Python dependencies
 └── README.md                          # Documentation
+```
+
+---
+
+## 👤 Author & Acknowledgements
+
+- **Author:** Anuj Yadav ([@anuj-iitkgp](https://github.com/anuj-iitkgp))
+- **Institution:** IIT Kharagpur
+
+---
+
+## 📜 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
