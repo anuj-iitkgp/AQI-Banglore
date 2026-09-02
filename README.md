@@ -28,8 +28,6 @@ Multiple algorithms were evaluated to find the best model for PM2.5 prediction. 
 
 ## 📈 Visualizations & Insights
 
-> *Note: Place your graph images inside an `assets/` folder in your repository to display them here.*
-
 ### 1. Feature Importance (XGBoost)
 Understanding which pollutants and meteorological factors contribute most to Bangalore's AQI:
 ![Feature Importance](assets/feature_importance.png)
@@ -52,7 +50,7 @@ Model prediction accuracy comparison on the test dataset:
 
 ## 📂 Project Structure
 
-
+```text
 AQI-Banglore/
 │── assets/                            # Graphs and visualization images
 │── data/                              # Raw and cleaned dataset files
@@ -62,17 +60,3 @@ AQI-Banglore/
 │── app.py                             # Web application / UI entry point
 │── requirements.txt                   # List of Python dependencies
 └── README.md                          # Documentation
-
-
----
-
-## 👤 Author & Acknowledgements
-
-- **Author:** Anuj Yadav ([@anuj-iitkgp](https://github.com/anuj-iitkgp))
-- **Institution:** IIT Kharagpur
-
----
-
-## 📜 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
