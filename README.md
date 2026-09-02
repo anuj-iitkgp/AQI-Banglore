@@ -52,7 +52,7 @@ Model prediction accuracy comparison on the test dataset:
 
 ## 📂 Project Structure
 
-```text
+
 AQI-Banglore/
 │── assets/                            # Graphs and visualization images
 │── data/                              # Raw and cleaned dataset files
